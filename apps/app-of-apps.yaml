@@ -1,0 +1,27 @@
+# Root Application — applied automatically by py-bay-fast-api-infra (terraform apply, default
+# join_existing_cluster = true), or manually:
+#   kubectl apply -f apps/app-of-apps.yaml -n argocd
+#
+# Named py-bay-fast-api-app-of-apps (not "app-of-apps") because this cluster also runs go-ledger-x,
+# whose own root Application is already named "app-of-apps" in this same argocd namespace — reusing
+# that name would collide with/overwrite it.
+#
+# After applying, ArgoCD self-manages everything else in this directory.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: py-bay-fast-api-app-of-apps
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/BoeingPo/py-bay-fast-api-gitops
+    targetRevision: main
+    path: apps
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

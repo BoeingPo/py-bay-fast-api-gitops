@@ -1,0 +1,43 @@
+# DynamoDB Local runs in-memory (-inMemory flag) — no PVC, data resets on pod restart.
+# Swap this Application out for real AWS DynamoDB whenever you're ready: just point
+# DYNAMODB_ENDPOINT in py-bay-fast-api/k8s/deployment.yaml at AWS and delete this app.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dynamodb-local
+  namespace: py-bay-fast-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dynamodb-local
+  template:
+    metadata:
+      labels:
+        app: dynamodb-local
+    spec:
+      containers:
+        - name: dynamodb-local
+          image: amazon/dynamodb-local:1.24.0
+          args: ["-jar", "DynamoDBLocal.jar", "-sharedDb", "-inMemory"]
+          ports:
+            - containerPort: 8000
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 300m
+              memory: 512Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dynamodb-local
+  namespace: py-bay-fast-api
+spec:
+  selector:
+    app: dynamodb-local
+  ports:
+    - port: 8000
+      targetPort: 8000

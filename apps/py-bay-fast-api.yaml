@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: py-bay-fast-api
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/BoeingPo/py-bay-fast-api
+    targetRevision: main
+    path: k8s
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: py-bay-fast-api
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
