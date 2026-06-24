@@ -9,8 +9,12 @@ ArgoCD app-of-apps GitOps repo for [py-bay-fast-api](https://github.com/BoeingPo
 |---|---|---|
 | `py-bay-fast-api-app-of-apps` | this repo, `apps/` | `argocd` |
 | `py-bay-fast-api` | [`py-bay-fast-api`](https://github.com/BoeingPo/py-bay-fast-api) repo, `k8s/` | `py-bay-fast-api` |
+| `ts-preact-bay` | [`ts-preact-bay`](https://github.com/BoeingPo/ts-preact-bay) repo, `k8s/` | `py-bay-fast-api` |
 | `postgres` | this repo, `postgres/` | `py-bay-fast-api` |
 | `dynamodb-local` | this repo, `dynamodb-local/` | `py-bay-fast-api` |
+
+`ts-preact-bay` (the frontend) shares the `py-bay-fast-api` namespace rather than getting its own — it's the
+same logical product, and the cluster is tight on resources, so there's no benefit to splitting it out.
 
 The root Application is named `py-bay-fast-api-app-of-apps`, not `app-of-apps` — this cluster also runs
 go-ledger-x, whose own root Application already uses the plain name `app-of-apps` in the same `argocd`
